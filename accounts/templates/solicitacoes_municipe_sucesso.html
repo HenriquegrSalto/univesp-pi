@@ -1,0 +1,36 @@
+
+<!-- accounts/templates/solicitacoes_municipe_sucesso.html -->
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Sucesso</title>
+    <style>
+        /* Adiciona estilos ao botão Voltar */
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+        /* Adiciona estilos à mensagem do ID */
+        p.id {
+            font-size: 1.5em; /* Aumenta o tamanho da fonte */
+            font-weight: bold; /* Torna a fonte em negrito */
+        }
+    </style>
+</head>
+<body>
+    <h1>Sua solicitação foi enviada com sucesso!</h1>
+    <p class="id">O ID da sua solicitação é {{ id }}.</p> <!-- Adicione a classe 'id' aqui -->
+    <a href="{% url 'painel_solicitacoes_municipe' %}">Voltar</a>
+</body>
+</html>

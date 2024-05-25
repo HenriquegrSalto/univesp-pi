@@ -1,0 +1,118 @@
+
+<!-- Estya página serve para a prefeitura realizar as tratativas -->
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel da Prefeitura</title>
+    <style>
+        .status-menu, .prioridade-menu {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid black;
+            min-width: 100px;
+            left: 50%;
+            transform: translateX(-306%);
+        }
+        .status-menu a, .prioridade-menu a {
+            display: block;
+            padding: 5px;
+            text-decoration: none;
+            color: black;
+        }
+        td.mensagem {
+            white-space: pre-wrap;
+        }
+        /* Adiciona estilos à tabela */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            cursor: pointer; /* Adiciona o cursor de ponteiro */
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        function toggleStatusMenu(id) {
+            var menu = document.getElementById('status-menu-' + id);
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function togglePrioridadeMenu(id) {
+            var menu = document.getElementById('prioridade-menu-' + id);
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function pesquisarPorId() {
+            var id = document.getElementById('pesquisa').value;
+            var solicitacoes = document.getElementsByClassName('solicitacao');
+            for (var i = 0; i < solicitacoes.length; i++) {
+                if (solicitacoes[i].id !== 'solicitacao-' + id) {
+                    solicitacoes[i].style.display = 'none';
+                } else {
+                    solicitacoes[i].style.display = '';
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Solicitações</h1>
+    <input type="text" id="pesquisa" placeholder="Digite o ID para pesquisar">
+    <button onclick="pesquisarPorId()">Pesquisar</button>
+    <button onclick="location.reload()">Atualizar</button> <!-- Adiciona o botão de atualizar -->
+    <table>
+        <tr>
+            <th>ID</th>            
+            <th>Foto</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Nome</th>
+            <th>Endereço</th>
+            <th>Tipo de Solicitação</th>
+            <th>Prioridade</th>
+            <th>Mensagem</th> 
+        </tr>
+        {% for solicitacao in solicitacoes %}
+        <tr class="solicitacao" id="solicitacao-{{ solicitacao.id }}">
+            <td>{{ solicitacao.id }}</td>
+            <td>
+                {% if solicitacao.imagem %}
+                    <a href="{{ solicitacao.imagem.url }}" target="_blank">Ver Imagem</a>
+                {% endif %}
+            </td>
+            <td>{{ solicitacao.data_abertura }}</td>
+            <td onclick="toggleStatusMenu({{ solicitacao.id }})">{{ solicitacao.status }} <span>&#9660;</span></td> <!-- Adiciona a seta -->
+            <td>{{ solicitacao.nome }}</td>
+            <td>{{ solicitacao.endereco }}</td>
+            <td>{{ solicitacao.get_tipo_solicitacao_display }}</td>
+            <td onclick="togglePrioridadeMenu({{ solicitacao.id }})">{{ solicitacao.prioridade }}</td>
+            <td class="mensagem">{{ solicitacao.mensagem }}</td> 
+        </tr>
+        <tr id="status-menu-{{ solicitacao.id }}" class="status-menu">
+            <td colspan="9"> 
+                <a href="{% url 'atualizar_status' solicitacao.id 'em aberto' %}">Em Aberto</a>
+                <a href="{% url 'atualizar_status' solicitacao.id 'pendente' %}">Pendente</a>
+                <a href="{% url 'atualizar_status' solicitacao.id 'finalizado' %}">Finalizado</a>
+            </td>
+        </tr>
+        <tr id="prioridade-menu-{{ solicitacao.id }}" class="prioridade-menu">
+            <td colspan="9"> 
+                <a href="{% url 'atualizar_prioridade' solicitacao.id 'minima' %}">Mínima</a>
+                <a href="{% url 'atualizar_prioridade' solicitacao.id 'maxima' %}">Máxima</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
+
+
+
